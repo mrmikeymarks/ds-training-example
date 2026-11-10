@@ -1,13 +1,75 @@
 # Simplest data science training examples
 
-Two tiny scripts that train a model on your own machine. No Google, no OpenAI,
-no cloud account, no API key. Each one follows the four steps every data
-science project uses: **data -> split -> train -> evaluate**.
+Small Python examples that train a model on your own machine. No Google, no
+OpenAI, no cloud account, no API key. Each one follows the four steps every
+data science project uses: **data -> split -> train -> evaluate**.
+
+## Setup
+
+`train_stdlib.py` needs nothing but Python, so you can run it straight away.
+Everything else needs a few libraries, which are listed in `requirements.txt`.
+The usual way to install them is into a **virtual environment**: a private
+folder of packages just for this project, so nothing you install here touches
+the rest of your computer.
+
+You need Python 3.9 or newer. Check what you have:
+
+```bash
+python3 --version
+```
+
+**1. Create the virtual environment.** Run this once, from inside the project
+folder. It makes a folder called `.venv`.
+
+```bash
+python3 -m venv .venv
+```
+
+**2. Turn it on.** Do this in every new terminal window before working on the
+project.
+
+```bash
+source .venv/bin/activate
+```
+
+Your prompt now starts with `(.venv)`, which is how you can tell it is on.
+
+**3. Install the libraries.** Run this once, and again if `requirements.txt`
+ever changes.
+
+```bash
+pip install -r requirements.txt
+```
+
+**4. Check that it worked.** You should see an accuracy of about 98% for each
+of three models.
+
+```bash
+python3 train_sklearn.py
+```
+
+Good to know:
+
+- `deactivate` turns the environment off again. Closing the terminal does the
+  same.
+- To start over, delete the `.venv` folder and repeat the steps.
+- On Windows, type `python` instead of `python3`, and turn the environment on
+  with `.venv\Scripts\activate`.
+- If you use the `virtualenv` tool, `virtualenv .venv` does the same job as
+  step 1.
+
+### Prefer uv?
+
+If you have [uv](https://docs.astral.sh/uv/), you can skip the setup. Type
+`uv run` in place of `python3`, for example `uv run train_sklearn.py`. Each
+script names the libraries it needs at the top of the file, and `uv` installs
+them into a throwaway environment the first time you run it. The notebook has
+its own `uv` command in section 5.
 
 ## 1. `train_stdlib.py` — zero installs
 
 Fits a straight line (linear regression) to hours-studied vs exam-score data
-using plain Python. Nothing to install.
+using plain Python. Nothing to install, so it runs without the setup above.
 
 ```bash
 python3 train_stdlib.py
@@ -25,16 +87,6 @@ test flowers, then a fairer 10-way cross-validated average. The dataset ships in
 nothing is downloaded when the script runs.
 
 ```bash
-uv run train_sklearn.py
-```
-
-`uv` reads the dependency line at the top of the file and installs scikit-learn
-(and, the first time only, a recent Python if it needs one) into a throwaway
-environment. If you would rather not use `uv`:
-
-```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install scikit-learn
 python3 train_sklearn.py
 ```
 
@@ -52,7 +104,7 @@ show how much the luck of the split matters.
 Draws two PNGs so you can see what the scripts did instead of reading numbers.
 
 ```bash
-uv run visualize.py
+python3 visualize.py
 ```
 
 - `plot_regression.png`: the hours-vs-score points with the learned line, and the
@@ -77,11 +129,11 @@ fitted model to a file. Any other Python program can then load that file and
 ask it questions without training anything.
 
 ```bash
-uv run save_model.py
+python3 save_model.py
 ```
 
 ```bash
-uv run client.py 6.5 3.0 5.5 2.0
+python3 client.py 6.5 3.0 5.5 2.0
 ```
 
 `save_model.py` writes `iris_model.joblib`, which bundles the fitted logistic
@@ -102,26 +154,22 @@ straight line from `train_stdlib.py`, Part 2 is the three iris models from
 model and loads it back like `save_model.py` and `client.py`.
 
 ```bash
-uv run --python 3.13 --with-requirements requirements.txt jupyter lab walkthrough.ipynb
+jupyter lab walkthrough.ipynb
 ```
 
 That opens JupyterLab in your browser. Click a cell and press Shift + Enter to
 run it and move to the next one. The outputs of a full run are saved in the
 file, so you can also read it without running anything, for example on GitHub
-or in VS Code. The `--python 3.13` part stops `uv` from borrowing whatever
-older Python environment happens to be active in your terminal.
+or in VS Code.
 
-`requirements.txt` lists every library the scripts and the notebook import.
-Without `uv`:
+With `uv` instead of the virtual environment:
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-jupyter lab walkthrough.ipynb
+uv run --python 3.13 --with-requirements requirements.txt jupyter lab walkthrough.ipynb
 ```
 
-With that environment active, the other scripts also run with plain `python3`,
-for example `python3 visualize.py`.
+The `--python 3.13` part stops `uv` from borrowing whatever older Python
+environment happens to be active in your terminal.
 
 Part 3 of the notebook writes its own file, `notebook_model.joblib`, so it does
 not replace the `iris_model.joblib` that `client.py` reads.
