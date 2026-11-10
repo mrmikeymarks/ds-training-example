@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Trained models are generated files: run `uv run save_model.py` to make
+# iris_model.joblib. They are Python pickles tied to one scikit-learn version,
+# so they are rebuilt locally instead of shared.
+*.joblib
+
+# macOS
+.DS_Store
